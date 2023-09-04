@@ -45,249 +45,27 @@ ANSI.push(0, 0);
 UNICODE.push(0, 0); //2 hat CUSTOM :)
 // end
 
-var ANSIbackup = ANSI.slice(0); //XEROX!
-var UNICODEbackup = UNICODE.slice(0);
+export function convertAnsiToUnicode(input: string) {
+  let output = "";
 
-function convert(from, to, A2U) {
-  // from-n u to-n textareaneri IDnern en
-  arrFrom = A2U ? ANSI : UNICODE;
-  arrTo = A2U ? UNICODE : ANSI;
+  for (let i = 0; i < input.length; i++) {
+    const tar = input.charCodeAt(i);
 
-  var ekac = document.getElementById(from).value;
-  var gnacogh = "";
-  var len = ekac.length;
-  var tar;
-  var current; //boolean
-
-  for (var i = 0; i < len; i++) {
-    tar = ekac.charCodeAt(i);
-    //console.info(String.fromCharCode(tar));
-    FromumKa = false;
-    for (var j = 0; j < arrFrom.length; j++) {
-      if (tar == arrFrom[j]) {
-        if (arrTo[j] == "") {
+    let FromumKa = false;
+    for (let j = 0; j < ANSI.length; j++) {
+      if (tar === ANSI[j]) {
+        // @ts-expect-error copied from another website
+        if (UNICODE[j] == "") {
+          console.log("found bug", UNICODE[j]);
           FromumKa = true;
           break;
         }
-        gnacogh += String.fromCharCode(arrTo[j]);
+        output += String.fromCharCode(UNICODE[j]);
         FromumKa = true;
         break;
       }
     }
-    if (!FromumKa) gnacogh += String.fromCharCode(tar);
+    if (!FromumKa) output += String.fromCharCode(tar);
   }
-  document.getElementById(to).value = gnacogh;
+  return output;
 }
-
-function U2A(e) {
-  console.info("U2A");
-  var t1 = CKEDITOR.instances.unicodeextended;
-  var t2 = CKEDITOR.instances.ansiextended;
-  if (typeof t != "undefined") clearTimeout(t);
-  t = setTimeout(function () {
-    console.info("  U2A");
-    $("#unicodeextended").val(t1.getData());
-    convert("unicodeextended", "ansiextended", false);
-    t2.setData($("#ansiextended").val());
-  }, 50);
-}
-function A2U(e) {
-  console.info("A2U");
-  var t1 = CKEDITOR.instances.unicodeextended;
-  var t2 = CKEDITOR.instances.ansiextended;
-  if (!t2.checkDirty()) return;
-  t2.resetDirty();
-  if (typeof tt != "undefined") clearTimeout(tt);
-  tt = setTimeout(function () {
-    console.info("  A2U");
-    $("#ansiextended").val(t2.getData());
-    convert("ansiextended", "unicodeextended", true);
-    t1.setData($("#unicodeextended").val());
-  }, 100);
-}
-function isChanged(i) {
-  return ANSI[i] != ANSIbackup[i] || UNICODE[i] != UNICODEbackup[i];
-}
-function createMap() {
-  var $table = $("<table><tbody></tbody></table>").appendTo(
-    $("#tableContainer")
-  );
-  var $tr, $lastTd;
-  for (var i = 0; i < ANSI.length; i++) {
-    $tr = $("<tr>")
-      .appendTo($table)
-      .attr("hamar", i)
-      .click(function () {
-        showForm($(this).attr("hamar"));
-      });
-    $(
-      '<td class="ansi"><span>' + String.fromCharCode(ANSI[i]) + "</span></td>"
-    ).appendTo($tr);
-    $(
-      '<td class="unicode"><span>' +
-        String.fromCharCode(UNICODE[i]) +
-        "</span></td>"
-    ).appendTo($tr);
-    $lastTd = $("<td></td>").appendTo($tr);
-    $('<a href="#" class="OK"></a>')
-      .attr("hamar", i)
-      .click(function (e) {
-        e.stopPropagation();
-        changeMap($(this).attr("hamar"));
-        return false;
-      })
-      .appendTo($lastTd)
-      .hide();
-    $('<a href="#" class="reset"></a>')
-      .attr("hamar", i)
-      .click(function () {
-        resetMap($(this).attr("hamar"));
-        return false;
-      })
-      .appendTo($lastTd)
-      .hide();
-    if (LS)
-      if (isChanged(i))
-        //guini harc@
-        $tr.addClass("changed").find(".reset").css("display", "block");
-  }
-}
-function updateMapRow(i) {
-  var $tr = getMapRow(i).click(function () {
-    showForm($(this).attr("hamar"));
-  });
-  $tr.find("td:nth-child(1)").html(String.fromCharCode(ANSI[i]));
-  $tr.find("td:nth-child(2)").html(String.fromCharCode(UNICODE[i]));
-
-  if (isChanged(i))
-    $tr.addClass("changed").find(".reset").css("display", "block");
-  else $tr.removeClass("changed").find(".reset").hide();
-}
-function changeMap(i) {
-  var $tr = getMapRow(i);
-  $tr.find(".reset").css("display", "block");
-  $tr.find(".OK").hide();
-  ANSI[i] = parseInt($tr.find("td:nth-child(1) input").val());
-  UNICODE[i] = parseInt($tr.find("td:nth-child(2) input").val());
-  updateMapRow(i);
-
-  if (LS)
-    $("#storage")
-      .click(function () {
-        LSsaveMap();
-        return false;
-      })
-      .css("display", "block");
-}
-function resetMap(i) {
-  ANSI[i] = ANSIbackup[i];
-  UNICODE[i] = UNICODEbackup[i];
-  updateMapRow(i);
-}
-function getMapRow(hamar) {
-  return $("#tableContainer tbody tr:nth-child(" + (parseInt(hamar) + 1) + ")");
-}
-function showForm(hamar) {
-  var $tr = getMapRow(hamar).unbind("click"); //vor el onclicki jamanak ban chani
-  $tr
-    .find("td:nth-child(1)")
-    .html('<input type="text" value="' + ANSI[hamar] + '"/>');
-  $tr
-    .find("td:nth-child(2)")
-    .html('<input type="text" value="' + UNICODE[hamar] + '"/>');
-  $tr.find(".reset").hide();
-  $tr.find(".OK").css("display", "block");
-  addTooltip("#map input", "#tInputs");
-}
-
-var LS = typeof localStorage != "undefined";
-if (LS) LSloadMap();
-function LSsaveMap() {
-  for (var i = 0; i < ANSI.length; i++) {
-    if (!isChanged(i)) {
-      localStorage.removeItem("mapAnsi" + i);
-      localStorage.removeItem("mapUnicode" + i);
-    } else {
-      localStorage.setItem("mapAnsi" + i, ANSI[i]);
-      localStorage.setItem("mapUnicode" + i, UNICODE[i]);
-    }
-  }
-  $("#storage").hide();
-}
-function LSloadMap() {
-  var x;
-  for (var i = 0; i < ANSI.length; i++) {
-    x = localStorage.getItem("mapAnsi" + i);
-    if (x) {
-      ANSI[i] = x;
-      UNICODE[i] = localStorage.getItem("mapUnicode" + i);
-      updateMapRow(i);
-    }
-  }
-}
-
-isExtended = false;
-neverExtended = true;
-$(function () {
-  $("#ansi")
-    .click(function () {
-      this.select();
-    })
-    .keydown(function () {
-      if (typeof t != "undefined") clearTimeout(t);
-      t = setTimeout(function () {
-        convert("ansi", "unicode", true);
-      }, 50);
-    });
-  $("#unicode")
-    .click(function () {
-      this.select();
-    })
-    .keydown(function () {
-      if (typeof t != "undefined") clearTimeout(t);
-      t = setTimeout(function () {
-        convert("unicode", "ansi", false);
-      }, 50);
-    });
-
-  $(".tabs a").click(function () {
-    toggleExtended();
-    return false;
-  });
-  function toggleExtended() {
-    $(".tabs a").toggleClass("tabActive");
-    $(".extended").toggle();
-    $(".simple").toggle();
-    isExtended = !isExtended;
-    if (neverExtended) {
-      neverExtended = false;
-      var config = {
-        toolbarLocation: "none",
-        removePlugins: "elementspath",
-        resize_enabled: false,
-        skin: "v2",
-        height: 158,
-        entities: false,
-      };
-      var CKEa = CKEDITOR.replace("ansiextended", config);
-      CKEa.on("instanceReady", function () {
-        this.document.on("keydown", A2U);
-      });
-      CKEa.on("instanceReady", function () {
-        this.document.on("paste", A2U);
-      });
-      var CKEu = CKEDITOR.replace("unicodeextended", config);
-      CKEu.on("instanceReady", function () {
-        this.document.on("keydown", U2A);
-      });
-      CKEu.on("instanceReady", function () {
-        this.document.on("paste", U2A);
-      });
-    }
-  }
-  $("#mapButton").click(function () {
-    $("#map").toggle();
-    return false;
-  });
-  createMap();
-});
