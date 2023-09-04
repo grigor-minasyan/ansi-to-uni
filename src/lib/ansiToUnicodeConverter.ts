@@ -67,5 +67,9 @@ export function convertAnsiToUnicode(input: string) {
     }
     if (!FromumKa) output += String.fromCharCode(tar);
   }
-  return output;
+  return output
+    .split("\n")
+    .map((str) => str.trim())
+    .join("\n")
+    .replace(/ +/g, " ");
 }
