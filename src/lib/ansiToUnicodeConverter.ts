@@ -73,3 +73,98 @@ export function convertAnsiToUnicode(input: string) {
     .join("\n")
     .replace(/ +/g, " ");
 }
+
+export const convertArmenianLettersToLatin = (input: string) => {
+  const letters = {
+    // upper
+    Ա: "A",
+    Բ: "B",
+    Գ: "G",
+    Դ: "D",
+    Ե: "E",
+    Զ: "Z",
+    Է: "E",
+    Ը: "Y",
+    Թ: "T",
+    Ժ: "ZH",
+    Ի: "I",
+    Լ: "L",
+    Խ: "KH",
+    Ծ: "TS",
+    Կ: "K",
+    Հ: "H",
+    Ձ: "DZ",
+    Ղ: "GH",
+    Ճ: "J",
+    Մ: "M",
+    Յ: "Y",
+    Ն: "N",
+    Շ: "SH",
+    // double check
+    Ո: "O",
+    Չ: "CH",
+    Պ: "P",
+    Ջ: "J",
+    Ռ: "R",
+    Ս: "S",
+    Վ: "V",
+    Տ: "T",
+    Ր: "R",
+    Ց: "TS",
+    ՈՒ: "U",
+    Փ: "P",
+    Ք: "Q",
+    Օ: "O",
+    Ֆ: "F",
+    // lower
+    ա: "a",
+    բ: "b",
+    գ: "g",
+    դ: "d",
+    ե: "e",
+    զ: "z",
+    է: "e",
+    ը: "y",
+    թ: "t",
+    ժ: "zh",
+    ի: "i",
+    լ: "l",
+    խ: "kh",
+    ծ: "ts",
+    կ: "k",
+    հ: "h",
+    ձ: "dz",
+    ղ: "gh",
+    // double check
+    ճ: "j",
+    մ: "m",
+    յ: "y",
+    ն: "n",
+    շ: "sh",
+    // double check
+    ո: "o",
+    չ: "ch",
+    պ: "p",
+    ջ: "j",
+    ռ: "r",
+    ս: "s",
+    վ: "v",
+    տ: "t",
+    ր: "r",
+    ց: "ts",
+    ու: "u",
+    փ: "p",
+    ք: "q",
+    օ: "o",
+    ֆ: "f",
+
+    //
+    և: "Yev",
+    եւ: "yev",
+  } as Record<string, string>;
+
+  return input
+    .split("")
+    .map((letter) => letters[letter] || letter)
+    .join("");
+};
