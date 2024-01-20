@@ -159,7 +159,7 @@ export const convertArmenianLettersToLatin = (input: string) => {
     ֆ: "f",
 
     //
-    և: "Yev",
+    և: "yev",
     եւ: "yev",
   } as Record<string, string>;
 
