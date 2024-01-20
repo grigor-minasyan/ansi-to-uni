@@ -40,7 +40,7 @@ function App() {
         <Textarea rows={10} readOnly value={latinText} />
         <Button
           className="my-2"
-          onClick={() => navigator.clipboard.writeText(convertedText)}
+          onClick={() => navigator.clipboard.writeText(latinText)}
         >
           Copy to clipboard
         </Button>
